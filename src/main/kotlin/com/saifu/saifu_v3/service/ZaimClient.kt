@@ -5,11 +5,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.saifu.saifu_v3.config.OAuthConfig
 import com.saifu.saifu_v3.handler.APIResponseHandler
 import com.saifu.saifu_v3.model.*
+import com.saifu.saifu_v3.type.MoneyConditionType
 import oauth.signpost.OAuthConsumer
 import oauth.signpost.OAuthProvider
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
 import org.springframework.stereotype.Component
+import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @Component
@@ -53,8 +55,12 @@ class ZaimClient(
         return objectMapper.readValue<Verify>(userJson).user
     }
 
-    fun getAllMoney(): List<Money> {
-        val uri = URI(API_MONEY_URL)
+    fun getMoneyList(queryParameters: Map<MoneyConditionType, String> = mapOf()): List<Money> {
+
+        val uri = UriComponentsBuilder.fromHttpUrl(API_MONEY_URL).also {
+            queryParameters.forEach { (k, v) -> it.queryParam(k.key, v) }
+        }.build().toUri()
+
         val moneyJson = sendGetRequest(uri)
         return objectMapper.readValue<MoneyResponse>(moneyJson).moneyList
     }
