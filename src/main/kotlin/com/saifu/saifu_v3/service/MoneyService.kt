@@ -9,9 +9,9 @@ class MoneyService(
         private val zaimClient: ZaimClient
 ) {
 
-    fun getAllMoneyList(): List<Money> = zaimClient.getMoneyList()
+    fun findAllMoneyList(): List<Money> = zaimClient.getMoneyList()
 
-    fun searchMoneyList(searchParameters: Map<MoneyConditionType, String> = mapOf()): List<Money> {
+    fun findMoneyList(searchParameters: Map<MoneyConditionType, String> = mapOf()): List<Money> {
         return zaimClient.getMoneyList(searchParameters)
     }
 

@@ -21,7 +21,7 @@ class IndexController(
             "redirect:/login"
         } else {
             val user = userService.getUser()
-            val moneyList = moneyService.getAllMoneyList()
+            val moneyList = moneyService.findAllMoneyList()
             model.addAttribute("user", user)
             "index"
         }
