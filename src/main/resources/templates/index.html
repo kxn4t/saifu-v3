@@ -4,9 +4,97 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+          integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/earlyaccess/nicomoji.css" rel="stylesheet">
+    <style>
+        .wf-nicomoji {
+            font-family: "Nico Moji";
+        }
+    </style>
     <title>Saifu</title>
 </head>
 <body>
-<p th:text="'こんにちは ' + ${user.name} + ' さん'"></p>
+<!-- nav -->
+<nav class="container-fluid navbar navbar-dark bg-dark py-0">
+    <div class="container">
+        <a href="/" class="navbar-brand mb-0 h1 wf-nicomoji">Saifu</a>
+        <div class="d-flex align-items-center">
+            <img th:src="${user.profileImageUrl}" class="rounded-circle mx-2" style="width: 26px; height: 26px;">
+            <span class="navbar-text align-middle text-light" th:text="${user.name}"></span>
+        </div>
+    </div>
+</nav>
+<!-- -->
+<div class="container">
+    <div class="card bg-light shadow-sm my-4">
+        <div class="card-body mx-3">
+            <form th:action="@{/calculate}" method="post" th:object="${calculateForm}">
+                <!-- 精算期間 -->
+                <div class="d-flex mb-3">
+                    <hr class="my-auto flex-grow-1">
+                    <div class="px-4 font-weight-bold">精算期間</div>
+                    <hr class="my-auto flex-grow-1">
+                </div>
+                <div class="row mb-3">
+                    <label for="from" class="col-sm-2 col-form-label">From</label>
+                    <div class="col-sm-10">
+                        <input type="date" id="from" class="form-control" th:field="*{from}" placeholder="2020-03-20"
+                               th:classappend="${#fields.hasErrors('from')} ? is-invalid" required/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('from')}"
+                             th:errors="*{from}"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="to" class="col-sm-2 col-form-label">To</label>
+                    <div class="col-sm-10">
+                        <input type="date" id="to" class="form-control" th:field="*{to}" placeholder="2020-09-23"
+                               th:classappend="${#fields.hasErrors('to')} ? is-invalid" required/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('to')}"
+                             th:errors="*{to}"></div>
+                    </div>
+                </div>
+
+                <!-- 集計キーワード -->
+                <div class="d-flex mt-4 mb-3">
+                    <hr class="my-auto flex-grow-1">
+                    <div class="px-4 font-weight-bold">集計キーワード</div>
+                    <hr class="my-auto flex-grow-1">
+                </div>
+                <div class="row mb-3">
+                    <label for="keyword1" class="col-sm-2 col-form-label">キーワード1</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="keyword1" class="form-control" th:field="*{keyword[0]}" placeholder="恵"
+                               th:classappend="${#fields.hasErrors('keyword1NotEmpty')} ? is-invalid" required/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('keyword1NotEmpty')}"
+                             th:errors="*{keyword1NotEmpty}"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="keyword2" class="col-sm-2 col-form-label">キーワード2</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="keyword2" class="form-control" th:field="*{keyword[1]}" placeholder="英梨々"
+                               th:classappend="${#fields.hasErrors('keyword2NotEmpty')} ? is-invalid" required/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('keyword2NotEmpty')}"
+                             th:errors="*{keyword2NotEmpty}"></div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                        <input type="submit" class="btn btn-primary w-100 font-weight-bold" value="精算"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+        crossorigin="anonymous"></script>
 </body>
 </html>
