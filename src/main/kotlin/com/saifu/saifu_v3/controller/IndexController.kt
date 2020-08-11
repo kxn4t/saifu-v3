@@ -45,6 +45,10 @@ class IndexController(
             // input error
             return "index"
         }
+
+        val result = moneyService.calculate(form)
+        model.addAttribute("result", result)
+
         return "index"
     }
 

@@ -17,7 +17,7 @@ data class Money(
         val toAccountId: String,
         @JsonProperty("from_account_id")
         val fromAccountId: String,
-        val amount: BigDecimal,
+        val amount: Int,
         val comment: String,
         val active: String,
         val name: String,
