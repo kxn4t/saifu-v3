@@ -5,17 +5,16 @@ import com.saifu.saifu_v3.model.CalculateResult
 import com.saifu.saifu_v3.model.CalculateResultByKeyword
 import com.saifu.saifu_v3.model.Money
 import com.saifu.saifu_v3.type.MoneyConditionType
+import com.saifu.saifu_v3.utils.Utils
+import com.saifu.saifu_v3.utils.between
+import com.saifu.saifu_v3.utils.toLocalDate
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Service
 class MoneyService(
         private val zaimClient: ZaimClient
 ) {
-
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    private val zaimDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     fun fetchMoneyList(searchParameters: Map<MoneyConditionType, String> = mapOf()): List<Money> {
         return zaimClient.getMoneyList(searchParameters)
@@ -23,12 +22,12 @@ class MoneyService(
 
     fun calculate(condition: CalculateForm): CalculateResult {
 
-        val fromDate = condition.from.toDate(dateTimeFormatter)
-        val toDate = condition.to.toDate(dateTimeFormatter)
+        val fromDate = condition.from.toLocalDate(Utils.dateTimeFormatter)
+        val toDate = condition.to.toLocalDate(Utils.dateTimeFormatter)
 
         // 期間内のMoneyListを取得
         val calculateSource = fetchSixMonthsAgoMoneyList(fromDate).filter {
-            it.created.toDate(zaimDateTimeFormatter).between(fromDate, toDate)
+            it.created.toLocalDate(Utils.zaimDateTimeFormatter).between(fromDate, toDate)
         }
 
         // 合計額
@@ -64,17 +63,9 @@ class MoneyService(
 
     /** 集計期間の半年間前から取得する */
     private fun fetchSixMonthsAgoMoneyList(fromDate: LocalDate): List<Money> {
-        val sixMonthsAgo = fromDate.minusMonths(6).format(dateTimeFormatter)
+        val sixMonthsAgo = fromDate.minusMonths(6).format(Utils.dateTimeFormatter)
         val condition = mapOf(MoneyConditionType.START_DATE to sixMonthsAgo)
         return fetchMoneyList(condition)
-    }
-
-    private fun String.toDate(dateTimeFormatter: DateTimeFormatter): LocalDate {
-        return LocalDate.parse(this, dateTimeFormatter)
-    }
-
-    fun LocalDate.between(from: LocalDate, to: LocalDate): Boolean {
-        return !(from.isAfter(this) || to.isBefore(this))
     }
 
 }
