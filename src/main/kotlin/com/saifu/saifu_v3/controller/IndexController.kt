@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.servlet.mvc.support.RedirectAttributes
 
 @Controller
 class IndexController(
@@ -17,6 +18,9 @@ class IndexController(
         private val userService: UserService,
         private val moneyService: MoneyService
 ) {
+
+    private val FORM_KEY_NAME = "calculateForm"
+    private val ERRORS_KEY_NAME = BindingResult.MODEL_KEY_PREFIX + FORM_KEY_NAME
 
     @GetMapping("/")
     fun index(model: Model): String {
@@ -26,30 +30,35 @@ class IndexController(
         } else {
             val user = userService.getUser()
             model.addAttribute("user", user)
-            model.addAttribute("calculateForm", CalculateForm())
+
+            val form = model.asMap()[FORM_KEY_NAME] ?: CalculateForm()
+            model.addAttribute(FORM_KEY_NAME, form)
             "index"
         }
     }
 
     @PostMapping("/calculate")
-    fun calculate(@Validated form: CalculateForm, bindingResult: BindingResult, model: Model): String {
+    fun calculate(
+            @Validated form: CalculateForm,
+            bindingResult: BindingResult,
+            redirectAttributes: RedirectAttributes): String {
         if (userDetails.accessToken.isEmpty()) {
             // not login
             return "redirect:/login"
         }
 
-        val user = userService.getUser()
-        model.addAttribute("user", user)
+        redirectAttributes.addFlashAttribute(FORM_KEY_NAME, form)
+        redirectAttributes.addFlashAttribute(ERRORS_KEY_NAME, bindingResult)
 
         if (bindingResult.hasErrors()) {
             // input error
-            return "index"
+            return "redirect:/"
         }
 
         val result = moneyService.calculate(form)
-        model.addAttribute("result", result)
+        redirectAttributes.addFlashAttribute("result", result)
 
-        return "index"
+        return "redirect:/"
     }
 
 }
