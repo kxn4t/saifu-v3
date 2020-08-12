@@ -9,10 +9,10 @@ import javax.validation.constraints.Pattern
 data class CalculateForm(
         @field:NotEmpty(message = "必須です")
         @field:Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "日付形式で入力してください（yyyy-MM-dd）")
-        val from: String = "2020-03-20",
+        val from: String = "",
         @field:NotEmpty(message = "必須です")
         @field:Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "日付形式で入力してください（yyyy-MM-dd）")
-        val to: String = "2020-09-23",
+        val to: String = "",
         val keyword: List<String> = listOf("", "")
 ) {
     @AssertTrue(message = "必須です")
@@ -27,6 +27,10 @@ data class CalculateForm(
 
     @AssertTrue(message = "FromはToより以前の日付を設定してください")
     fun isValidDate(): Boolean {
-        return from.toLocalDate(Utils.dateTimeFormatter).isBefore(to.toLocalDate(Utils.dateTimeFormatter))
+        return if (from.isEmpty() || to.isEmpty()) {
+            true
+        } else {
+            from.toLocalDate(Utils.dateTimeFormatter).isBefore(to.toLocalDate(Utils.dateTimeFormatter))
+        }
     }
 }
