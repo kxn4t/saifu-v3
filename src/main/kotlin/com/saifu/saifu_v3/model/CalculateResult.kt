@@ -6,7 +6,9 @@ data class CalculateResult(
         /** 不一致リスト */
         val wrongList: List<Money>,
         /** キーワード毎集計結果 */
-        val resultsByKeyword: List<CalculateResultByKeyword>
+        val resultsByKeyword: List<CalculateResultByKeyword>,
+        /** slack送信用 */
+        val forSlack: String
 )
 
 data class CalculateResultByKeyword(
