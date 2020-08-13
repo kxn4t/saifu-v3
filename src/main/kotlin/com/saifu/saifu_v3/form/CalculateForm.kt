@@ -27,10 +27,10 @@ data class CalculateForm(
 
     @AssertTrue(message = "FromはToより以前の日付を設定してください")
     fun isValidDate(): Boolean {
-        return if (from.isEmpty() || to.isEmpty()) {
-            true
-        } else {
+        return try {
             from.toLocalDate(Utils.dateTimeFormatter).isBefore(to.toLocalDate(Utils.dateTimeFormatter))
+        } catch (ex: Exception) {
+            true
         }
     }
 }
