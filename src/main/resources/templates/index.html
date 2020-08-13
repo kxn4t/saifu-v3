@@ -14,7 +14,7 @@
     </style>
     <title>Saifu</title>
 </head>
-<body>
+<body onload="preset();">
 <!-- nav -->
 <nav class="container-fluid navbar navbar-dark bg-dark py-0">
     <div class="container px-lg-5">
@@ -30,7 +30,7 @@
     <!-- condition -->
     <div class="card bg-light shadow-sm my-4 mb-5">
         <div class="card-body mx-3">
-            <form th:action="@{/calculate}" method="post" th:object="${calculateForm}">
+            <form id="form" th:action="@{/calculate}" method="post" th:object="${calculateForm}">
                 <!-- 集計期間 -->
                 <div class="d-flex mb-3">
                     <hr class="my-auto flex-grow-1">
@@ -174,6 +174,26 @@
         crossorigin="anonymous"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    const conditionKeys = ['from', 'to', 'keyword1', 'keyword2'];
+    const CONDITION_PREFIX = 'condition_';
+    const form = document.getElementById('form');
+
+    function preset() {
+        conditionKeys.forEach(key => {
+            const item = localStorage.getItem(CONDITION_PREFIX + key);
+            if (item != null) {
+                $('#' + key).val(item);
+            }
+        })
+    }
+
+    form.addEventListener('submit', saveCondition);
+    function saveCondition() {
+        conditionKeys.forEach(key => {
+            localStorage.setItem(CONDITION_PREFIX + key, $('#' + key).val());
+        });
+    }
+
     function sendSlack() {
         const data1 = {
             text: $('#sendSlack').data('for-slack')
