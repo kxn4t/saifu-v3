@@ -18,7 +18,11 @@ class MoneyService(
 ) {
 
     fun fetchMoneyList(searchParameters: Map<MoneyConditionType, String> = mapOf()): List<Money> {
-        return zaimClient.getMoneyList(searchParameters)
+        return zaimClient.fetchMoneyList(searchParameters)
+    }
+
+    fun updateMoney(money: Money): Boolean {
+        return zaimClient.updateMoney(money)
     }
 
     fun calculate(condition: CalculateForm): CalculateResult {

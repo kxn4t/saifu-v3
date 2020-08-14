@@ -1,7 +1,6 @@
 package com.saifu.saifu_v3.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.math.BigDecimal
 
 data class Money(
         val id: String,
