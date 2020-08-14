@@ -86,7 +86,7 @@ class ZaimClient(
             it.queryParam("genre_id", money.genreId)
             it.queryParam("category_id", money.categoryId)
             it.queryParam("comment", money.comment)
-            it.queryParam("name", money.comment)
+            it.queryParam("name", money.name)
         }.build().toUri()
 
         val updatedJson = sendPutRequest(uri)
