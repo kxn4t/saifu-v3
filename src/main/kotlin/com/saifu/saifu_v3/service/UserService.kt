@@ -8,6 +8,6 @@ class UserService(
         private val zaimClient: ZaimClient
 ) {
 
-    fun getUser(): User = zaimClient.getUserVerify()
+    fun getUser(): User = zaimClient.fetchMe()
 
 }

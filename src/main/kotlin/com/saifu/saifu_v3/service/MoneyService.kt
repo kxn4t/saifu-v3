@@ -18,7 +18,15 @@ class MoneyService(
 ) {
 
     fun fetchMoneyList(searchParameters: Map<MoneyConditionType, String> = mapOf()): List<Money> {
-        return zaimClient.getMoneyList(searchParameters)
+        return zaimClient.fetchMoneyList(searchParameters)
+    }
+
+    fun fetchMoneyById(id: String): Money? {
+        return zaimClient.fetchMoneyList().firstOrNull { it.id == id }
+    }
+
+    fun updateMoney(money: Money): Boolean {
+        return zaimClient.updateMoney(money)
     }
 
     fun calculate(condition: CalculateForm): CalculateResult {
@@ -113,4 +121,16 @@ class MoneyService(
 
     private val Int.displayFormat get() = String.format("%,8d", this)
 
+    fun fillOutEmptyComments(comment: String, fromDate: LocalDate, toDate: LocalDate): List<Money> {
+        // 期間内のものを取得
+        val calculateSource = fetchSixMonthsAgoMoneyList(fromDate).filter {
+            it.created.toLocalDate(Utils.zaimDateTimeFormatter).between(fromDate, toDate)
+        }
+        val emptyList = calculateSource.filter { it.comment.isEmpty() }
+        val updateList = emptyList.map { it.copy(comment = comment) }
+
+        val successIdList = updateList.filter { zaimClient.updateMoney(it) }.map { it.id }
+
+        return zaimClient.fetchMoneyList().filter { successIdList.contains(it.id) }
+    }
 }
