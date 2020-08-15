@@ -4,6 +4,8 @@ import com.saifu.saifu_v3.form.CalculateForm
 import com.saifu.saifu_v3.model.UserDetails
 import com.saifu.saifu_v3.service.MoneyService
 import com.saifu.saifu_v3.service.UserService
+import com.saifu.saifu_v3.utils.Utils
+import com.saifu.saifu_v3.utils.toLocalDate
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -58,6 +60,14 @@ class IndexController(
         val result = moneyService.calculate(form)
         redirectAttributes.addFlashAttribute("result", result)
 
+        return "redirect:/"
+    }
+
+    @PostMapping("/fill-empty-comments")
+    fun fillOutEmptyComments(comment: String, from: String, to: String): String {
+        val fromDate = from.toLocalDate(Utils.dateTimeFormatter)
+        val toDate = to.toLocalDate(Utils.dateTimeFormatter)
+        val result = moneyService.fillOutEmptyComments(comment, fromDate, toDate)
         return "redirect:/"
     }
 

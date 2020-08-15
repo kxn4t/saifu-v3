@@ -127,6 +127,18 @@
         <!-- wrong list -->
         <div th:if="${result.wrongList.size() != 0}">
             <h4 class="mb-4 font-weight-bold text-center">不一致リスト</h4>
+            <!-- fill out comment -->
+            <div class="mb-2">
+                <span style="font-size: small">空のコメントを</span>
+                <form id="fill" th:action="@{/fill-empty-comments}" method="post" class="d-inline-block"
+                      th:each="keyword : ${calculateForm.keyword}">
+                    <input type="text" name="comment" th:value="${keyword}" hidden />
+                    <input type="text" name="from" th:value="${calculateForm.from}" hidden />
+                    <input type="text" name="to" th:value="${calculateForm.to}" hidden />
+                    <input type="submit" class="btn btn-sm btn-outline-primary" th:value="${keyword + ' で埋める'}"
+                           th:attr="onclick=|return confirm('${keyword} で更新しますか？')|" />
+                </form>
+            </div>
             <table class="table table-hover mb-5">
                 <thead class="table-warning">
                 <tr>
@@ -195,14 +207,14 @@
     }
 
     function sendSlack() {
-        const data1 = {
+        const data = {
             text: $('#sendSlack').data('for-slack')
         };
         $.ajax({
             method: 'POST',
             contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
             url: /*[(${"'" + @environment.getProperty('saifu.slack.url') + "'" })]*/ 'http://example.com',
-            data: JSON.stringify(data1)
+            data: JSON.stringify(data)
         })
             .then(
                 data => {
