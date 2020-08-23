@@ -87,7 +87,7 @@ class ZaimClient(
             it.queryParam("category_id", money.categoryId)
             it.queryParam("comment", money.comment)
             it.queryParam("name", money.name)
-        }.build().toUri()
+        }.build().encode().toUri()
 
         val updatedJson = sendPutRequest(uri)
         val moneyId = objectMapper.readTree(updatedJson).get("money")?.get("id")?.asText()
